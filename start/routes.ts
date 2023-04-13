@@ -6,8 +6,8 @@ Route.post("api/login", "AuthController.login");
 Route.get('api/logout', 'AuthController.logout')
 
 // user management api
-Route.get('api/user/:id', 'UsersController.show').middleware('auth:api')
-Route.post('api/user/:id', 'UsersController.store')
+Route.get('api/user/:userId', 'UsersController.show')
+Route.post('api/user/:userId', 'UsersController.store') // create or update user details
 
 // job management api
 Route.get('api/:userId/jobs', 'JobsController.index')
