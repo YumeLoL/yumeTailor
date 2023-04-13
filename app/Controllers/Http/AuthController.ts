@@ -1,5 +1,5 @@
 import type { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
-import { registerUserSchema } from "App/Validator/RegisterUserDto";
+import { loginUserSchema, registerUserSchema } from "App/Validator/registerUserSchema";
 import User from "App/Models/User";
 
 export default class AuthController {
@@ -10,9 +10,16 @@ export default class AuthController {
    * @returns
    */
   public async login({ request, auth }: HttpContextContract) {
-    const email = request.input("email");
-    const password = request.input("password");
-
+   
+    const validateLogin = await request.validate({
+      schema: loginUserSchema,
+      messages: {
+        'required': 'The {{ field }} field is required',
+        'minLength': 'The {{ field }} field cannot less than {{ options.minLength }} characters',
+      }
+    })
+    const {email, password} = validateLogin;
+   
     const token = await auth.use("api").attempt(email, password, {
       expiresIn: "10 days",
     });
@@ -40,7 +47,7 @@ export default class AuthController {
       const user = new User();
       user.email = validatedUser.email;
       user.password = validatedUser.password;
-      user.roleId = validatedUser.roleId;
+      user.roleId = validatedUser.roleId as number;
       // await user.useTransaction(trx).save();
       await user.save();
 
