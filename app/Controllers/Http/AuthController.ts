@@ -1,7 +1,14 @@
 import type { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
+import RegisterUserDto from "App/Dtos/RegisterUserDto";
 import User from "App/Models/User";
 
 export default class AuthController {
+  
+  /**
+   * login
+   * @param param0
+   * @returns
+   */
   public async login({ request, auth }: HttpContextContract) {
     const email = request.input("email");
     const password = request.input("password");
@@ -12,28 +19,45 @@ export default class AuthController {
     return token.toJSON();
   }
 
+
+  /**
+   * user registration
+   * @param param0
+   * @returns
+   */
   public async register({ request, auth }: HttpContextContract) {
-    const email = request.input("email");
-    const password = request.input("password");
-    const roleId = request.input("role_id");
+    const dto = await RegisterUserDto.fromRequest(request);
 
+    // const trx = await User.transaction();
 
-    /**
-     * Create a new user
-     */
+    try {
+      const user = new User();
+      user.email = dto.email;
+      user.password = dto.password;
+      user.roleId = dto.roleId;
+      // await user.useTransaction(trx).save();
+      await user.save();
 
-    const user = new User();
-    user.email = email;
-    user.password = password;
-    user.roleId = roleId;
-    await user.save();
+      const token = await auth.use("api").login(user, {
+        expiresIn: "10 days",
+      });
 
-    const token = await auth.use("api").login(user, {
-      expiresIn: "10 days",
-    });
+      // await trx.commit();
 
-    return token.toJSON();
+      return token.toJSON();
+    } catch (error) {
+      // await trx.rollback();
+      throw error;
+    }
   }
 
-
+  /**
+   * logout
+   * @param param0
+   * @returns
+   */
+  public async logout({ auth }: HttpContextContract) {
+    await auth.use("api").logout();
+    return { message: "Logout successfully" };
+  }
 }
