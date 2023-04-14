@@ -1,58 +1,82 @@
 import type { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 import Job from "App/Models/Job";
-import { jobSchema } from "App/Validator/jobSchema";
 
 export default class JobsController {
   /**
    * get all jobs posted under a user id
-   * @param param0 
-   * @returns 
+   * @param param0
+   * @returns
    */
   public async index({ params, response }: HttpContextContract) {
-    const jobs = await Job.query().where("userId", params.userId).orderBy("created_at", "desc");
+    const jobs = await Job.query()
+      .where("user_id", params.userId)
+      .orderBy("created_at", "desc");
     return response.json({ jobs });
   }
 
-
   /**
-   * create or update a job by user id
-   * @param param0 
-   * @returns 
+   * create a new job under a user id
+   * @param param0
+   * @returns
    */
   public async store({ params, request, response }: HttpContextContract) {
-    const validatedData = await request.validate({
-      schema: jobSchema,
-      messages: {   
-        "typeClothId.exists": "Please select a valid type of cloth",
-        'required': 'The {{ field }} field is required'
-      },
-    });
+    const validatedData = {
+      typeClothId: request.input("type_cloth_id"),
+      description: request.input("description"),
+      budget: request.input("budget"),
+    };
 
-    const userId = params.userId;
+    const job = new Job();
+    job.userId = params.userId;
+    job.typeClothId = validatedData.typeClothId;
+    job.description = validatedData.description;
+    job.budget = validatedData.budget;
+    await job.save();
 
-    let jobDetails = await Job.findBy("user_id", userId);
-
-    if (!jobDetails || jobDetails === undefined) {
-      jobDetails = new Job();
-      jobDetails.userId = userId;
-      jobDetails.merge({ ...validatedData });
-      await jobDetails.save();
-      return response.status(201).json({ jobDetails });
-    }
-
-    jobDetails.merge(validatedData);
-    await jobDetails.save();
-    return response.json({ jobDetails });
+    return response.status(201).json({ job });
   }
 
-  
+  /**
+   * update a job by job id
+   * @param param0
+   * @returns
+   */
+  public async update({ params, request, response }: HttpContextContract) {
+    const validatedData = {
+      typeClothId: request.input("type_cloth_id"),
+      description: request.input("description"),
+      budget: request.input("budget"),
+    };
 
-  public async show({ params, response }: HttpContextContract) {
-    const job = await Job.firstOrFail(params.jobId);
+    const job = await Job.findOrFail(params.jobId);
+    job.typeClothId = validatedData.typeClothId;
+    job.description = validatedData.description;
+    job.budget = validatedData.budget;
+    await job.save();
+
     return response.json({ job });
   }
 
-  public async destroy({ params, response }: HttpContextContract) { 
+  /**
+   * show a job by job id
+   * @param param0
+   * @returns
+   */
+  public async show({ params, response }: HttpContextContract) {
+    try {
+      const job = await Job.findOrFail(params.jobId);
+      return response.json({ job });
+    } catch (error) {
+      return response.status(404).json({ message: "Job not found" });
+    }
+  }
+
+  /**
+   * delete a job by job id
+   * @param param0
+   * @returns
+   */
+  public async destroy({ params, response }: HttpContextContract) {
     const job = await Job.findOrFail(params.jobId);
     await job.delete();
     return response.json({ message: "Job deleted successfully" });
