@@ -1,14 +1,15 @@
 import BaseSchema from "@ioc:Adonis/Lucid/Schema";
 
 export default class extends BaseSchema {
-  protected tableName = "todos";
+  protected tableName = "jobs";
 
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
-      table.increments("id");
-      table.string("title", 255).notNullable();
-      table.string("desc", 255).notNullable();
-      table.boolean("status").defaultTo(0);
+      table.increments("id").primary();
+      table.integer("user_id").notNullable();
+      table.integer("type_cloth_id").notNullable();
+      table.string("description").notNullable();
+      table.integer("budget").notNullable();
 
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
@@ -22,3 +23,4 @@ export default class extends BaseSchema {
     this.schema.dropTable(this.tableName);
   }
 }
+67;
