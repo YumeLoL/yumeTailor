@@ -9,7 +9,7 @@ export default class Job extends BaseModel {
   public userId: number
 
   @column()
-  public typeCloth: string
+  public typeClothId: number
 
   @column()
   public description: string

@@ -2,6 +2,7 @@ import type { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 import Role from "App/Models/Role";
 import User from "App/Models/User";
 import UserDetail from "App/Models/UserDetail";
+import { userValidationSchema } from "App/Validator/userSchema";
 
 export default class UsersController {
 
@@ -11,7 +12,10 @@ export default class UsersController {
    * @returns 
    */
   public async store({ request, response, params }: HttpContextContract) {
-    const userDetailsData = request.all();
+    const validatedData = await request.validate({
+      schema: userValidationSchema,
+      messages: {'required': 'The {{ field }} field is required'}
+    });
     const userId = params.userId;
   
     let userDetails = await UserDetail.findBy('user_id', userId);
@@ -19,12 +23,12 @@ export default class UsersController {
     if (!userDetails || userDetails === undefined) {
       userDetails = new UserDetail();
       userDetails.userId = userId;
-      userDetails.merge({ ...userDetailsData });
+      userDetails.merge({ ...validatedData });
       await userDetails.save();
       return response.status(201).json({ userDetails });
     }
   
-    userDetails.merge(userDetailsData);
+    userDetails.merge(validatedData);
     await userDetails.save();
     return response.json({ userDetails });
   }
