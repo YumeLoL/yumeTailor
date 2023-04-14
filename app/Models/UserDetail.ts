@@ -29,9 +29,6 @@ export default class UserDetail extends BaseModel {
   @column()
   public zip: string
 
-  @column()
-  public country: string
-
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 
