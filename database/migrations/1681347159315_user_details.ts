@@ -14,7 +14,6 @@ export default class extends BaseSchema {
       table.string('city', 255).notNullable()
       table.string('state', 255).notNullable()
       table.string('zip', 255).notNullable()
-      table.string('country', 255).notNullable()
       
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
