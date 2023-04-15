@@ -12,7 +12,7 @@ Route.group(() => {
   Route.post(":userId", "UsersController.store"); // create or update user details
 })
   .prefix("api/user")
-  .middleware("auth");
+  // .middleware("auth");
 
 
 
@@ -25,9 +25,13 @@ Route.group(() => {
     Route.delete("jobs/:jobId", "JobsController.destroy"); // Delete a job by ID
   })
     .prefix("api/:userId")
-    .middleware("auth");
+    // .middleware("auth");
 
 
 
 // cloth type api
 Route.get("api/cloth_types", "ClothTypesController.index");
+
+
+// image upload api
+Route.post("api/images/:jobId", "ImagesController.upload");

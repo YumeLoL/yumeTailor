@@ -7,9 +7,10 @@ export default class extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments("id").primary();
       table.integer("user_id").notNullable();
-      table.integer("type_cloth_id").notNullable();
+      table.string("type_cloth_id").notNullable();
       table.string("description").notNullable();
-      table.integer("budget").notNullable();
+      table.string("budget").notNullable();
+      table.string("status").notNullable();
 
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
@@ -22,5 +23,4 @@ export default class extends BaseSchema {
   public async down() {
     this.schema.dropTable(this.tableName);
   }
-}
-67;
+} 

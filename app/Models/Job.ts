@@ -9,13 +9,17 @@ export default class Job extends BaseModel {
   public userId: number
 
   @column()
-  public typeClothId: number
+  public typeClothId: string
 
   @column()
   public description: string
 
   @column()
-  public budget: number
+  public budget: string
+
+  @column()
+  public status: string //published or unpublished 
+
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
