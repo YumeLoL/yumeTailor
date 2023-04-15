@@ -14,6 +14,7 @@ export default class JobsController {
     return response.json({ jobs });
   }
 
+
   /**
    * create a new job under a user id
    * @param param0
@@ -21,16 +22,23 @@ export default class JobsController {
    */
   public async store({ params, request, response }: HttpContextContract) {
     const validatedData = {
-      typeClothId: request.input("type_cloth_id"),
+      typeClothId: request.input('type_cloth_id'),
       description: request.input("description"),
       budget: request.input("budget"),
+      status: request.input("status")
     };
+
+    // const validatedData = await request.validate({
+    //   schema: jobSchema
+    // });
+
 
     const job = new Job();
     job.userId = params.userId;
     job.typeClothId = validatedData.typeClothId;
     job.description = validatedData.description;
     job.budget = validatedData.budget;
+    job.status = validatedData.status;
     await job.save();
 
     return response.status(201).json({ job });
