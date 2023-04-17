@@ -1,4 +1,5 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import Job from 'App/Models/Job';
 import Quotation from 'App/Models/Quotation';
 
 export default class QuotationsController {
@@ -34,6 +35,11 @@ export default class QuotationsController {
         quotation.status = validatedData.status;
         quotation.message = validatedData.message;
         await quotation.save();
+
+        const job = await Job.findOrFail(params.jobId);
+        job.quotationCount ++;
+        await job.save();
+
         return response.status(201).json({quotation});
     }
     
@@ -92,6 +98,6 @@ export default class QuotationsController {
         } catch (error) {
             return response.status(404).json({message: 'Quotation not found'});
         }
-        
+
     }
 }

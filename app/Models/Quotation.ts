@@ -29,7 +29,7 @@ export default class Quotation extends BaseModel {
 
   @beforeCreate()
   public static async generateUuid(model: Quotation) {
-    model.id = uuid()
+    model.id = `QUOTE_${uuid()}`
   }
 }
 

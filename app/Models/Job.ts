@@ -13,6 +13,9 @@ export default class Job extends BaseModel {
   public typeClothId: string
 
   @column()
+  public location: string
+
+  @column()
   public description: string
 
   @column()
@@ -21,6 +24,8 @@ export default class Job extends BaseModel {
   @column()
   public status: string //published or unpublished 
 
+  @column()
+  public quotationCount: number
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
@@ -30,8 +35,7 @@ export default class Job extends BaseModel {
 
   @beforeCreate()
   public static async generateUuid(model: Job) {
-    model.id = uuid()
+    model.id = `JOB_${uuid()}`
   }
-
 }
 

@@ -35,6 +35,12 @@ export default class User extends BaseModel {
 
   @beforeCreate()
   public static async generateUuid(model: User) {
-    model.id = uuid()
+    if(model.roleId === 1){
+      model.id = `ADMIN_${uuid()}`
+    } else if(model.roleId === 2){
+      model.id = `CONSUMER_${uuid()}`
+    } else if(model.roleId === 3){
+      model.id = `MAKER_${uuid()}`
+    }
   }
 }

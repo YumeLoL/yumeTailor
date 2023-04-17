@@ -5,9 +5,9 @@ export default class extends BaseSchema {
 
   public async up () {
     this.schema.createTable(this.tableName, (table) => {
-      table.uuid('id').primary()
-      table.uuid('job_id').notNullable()
-      table.uuid('user_id').notNullable()
+      table.string('id').primary()
+      table.string('job_id').notNullable()
+      table.string('user_id').notNullable()
       table.integer('bit').notNullable()
       table.string('status').defaultTo('pending')
       table.string('message').notNullable( )

@@ -27,6 +27,8 @@ Route.group(() => {
     .prefix("api/:userId")
     // .middleware("auth");
 
+
+// quotation management api
 Route.group(() => { 
   Route.get("job/:jobId", "QuotationsController.index");  // show all quotations under a job id
   Route.post("job/:jobId", "QuotationsController.store"); // Create a new quotation under a job by user
@@ -36,6 +38,11 @@ Route.group(() => {
 })
   .prefix("api/quotation")
   // .middleware("auth");
+
+
+// common api
+Route.get('api/jobs/search', 'CommonController.pageWithFilter') // page with filter
+
 
 // cloth type api
 Route.get("api/cloth_types", "ClothTypesController.index");
