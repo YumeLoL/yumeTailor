@@ -131,10 +131,12 @@ export default class JobsController {
    */
   public async show({ params, response }: HttpContextContract) {
     try {
-      const job = await Job.query().where('id', params.jobId).firstOrFail();
+      const job = await Job.findBy("id", params.jobId);
+      
       if (job) {
         return response.json({ job });
       }
+
       return response.status(404).json({ message: 'Job not found' });
     } catch (error) {
       return response.status(500).json({ message: 'Something went wrong' });
