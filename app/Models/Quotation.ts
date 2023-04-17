@@ -2,30 +2,24 @@ import { DateTime } from 'luxon'
 import { BaseModel, beforeCreate, column } from '@ioc:Adonis/Lucid/Orm'
 import { v4 as uuid } from 'uuid'
 
-export default class Job extends BaseModel {
+export default class Quotation extends BaseModel {
   @column({ isPrimary: true })
   public id: string
 
   @column()
-  public userId: string
+  public jobId: string;
 
   @column()
-  public typeClothId: string
+  public userId: string;
 
   @column()
-  public location: string
+  public bit: number;
 
   @column()
-  public description: string
+  public status: string; // pending, accepted, rejected
 
   @column()
-  public budget: string
-
-  @column()
-  public status: string //published or unpublished 
-
-  @column()
-  public quotationCount: number
+  public message: string;
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
@@ -34,8 +28,9 @@ export default class Job extends BaseModel {
   public updatedAt: DateTime
 
   @beforeCreate()
-  public static async generateUuid(model: Job) {
-    model.id = `JOB_${uuid()}`
+  public static async generateUuid(model: Quotation) {
+    model.id = `QUOTE_${uuid()}`
   }
 }
+
 

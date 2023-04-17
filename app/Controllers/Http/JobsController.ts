@@ -23,9 +23,10 @@ export default class JobsController {
   public async store({ params, request, response }: HttpContextContract) {
     const validatedData = {
       typeClothId: request.input('type_cloth_id'),
+      location: request.input('location'),
       description: request.input("description"),
       budget: request.input("budget"),
-      status: request.input("status")
+      status: request.input("status"),
     };
 
     // const validatedData = await request.validate({
@@ -36,9 +37,11 @@ export default class JobsController {
     const job = new Job();
     job.userId = params.userId;
     job.typeClothId = validatedData.typeClothId;
+    job.location = validatedData.location;
     job.description = validatedData.description;
     job.budget = validatedData.budget;
     job.status = validatedData.status;
+    job.quotationCount = 0;
     await job.save();
 
     return response.status(201).json({ job });
@@ -52,12 +55,14 @@ export default class JobsController {
   public async update({ params, request, response }: HttpContextContract) {
     const validatedData = {
       typeClothId: request.input("type_cloth_id"),
+      location: request.input('location'),
       description: request.input("description"),
       budget: request.input("budget"),
     };
 
     const job = await Job.findOrFail(params.jobId);
     job.typeClothId = validatedData.typeClothId;
+    job.location = validatedData.location;
     job.description = validatedData.description;
     job.budget = validatedData.budget;
     await job.save();

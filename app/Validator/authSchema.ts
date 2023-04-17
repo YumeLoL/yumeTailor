@@ -13,6 +13,8 @@ export const registerUserSchema = schema.create({
   roleId: schema.number([rules.exists({ table: "roles", column: "id" })]),
 });
 
+
+
 export const loginUserSchema = schema.create({
   email: schema.string({ trim: true }, [
     rules.required(),

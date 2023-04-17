@@ -3,29 +3,37 @@ import { loginUserSchema, registerUserSchema } from "App/Validator/authSchema";
 import User from "App/Models/User";
 
 export default class AuthController {
-  
   /**
    * login
    * @param param0
    * @returns
    */
   public async login({ request, auth }: HttpContextContract) {
-   
+    // Validate the request data
     const validateLogin = await request.validate({
       schema: loginUserSchema,
       messages: {
-        'required': 'The {{ field }} field is required',
-        'minLength': 'The {{ field }} field cannot less than {{ options.minLength }} characters',
-      }
-    })
-    const {email, password} = validateLogin;
-   
+        required: "The {{ field }} field is required",
+        minLength:
+          "The {{ field }} field cannot less than {{ options.minLength }} characters",
+      },
+    });
+    const { email, password } = validateLogin;
+
+    // Authenticate the user and retrieve a token
     const token = await auth.use("api").attempt(email, password, {
       expiresIn: "10 days",
     });
+
+    // Retrieve the user by email
+    const user = await User.findByOrFail("email", email);
+    
+    
+    // Save the user's id to the auth object
+    await auth.use("api").login(user);
+    
     return token.toJSON();
   }
-
 
   /**
    * user registration
@@ -36,8 +44,9 @@ export default class AuthController {
     const validatedUser = await request.validate({
       schema: registerUserSchema,
       messages: {
-        'required': 'The {{ field }} field is required',
-        'minLength': 'The {{ field }} field cannot less than {{ options.minLength }} characters',
+        required: "The {{ field }} field is required",
+        minLength:
+          "The {{ field }} field cannot less than {{ options.minLength }} characters",
       },
     });
 
