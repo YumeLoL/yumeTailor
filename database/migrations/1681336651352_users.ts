@@ -6,7 +6,7 @@ export default class extends BaseSchema {
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.string("id").primary();
-      table.integer("role_id").notNullable();
+      table.integer("role").notNullable();
       table.string("email", 255).notNullable().unique();
       table.string("password", 180).notNullable();
       table.string("remember_me_token").nullable();
@@ -14,8 +14,9 @@ export default class extends BaseSchema {
       /**
        * Uses timestampz for PostgreSQL and DATETIME2 for MSSQL
        */
-      table.timestamp("created_at", { useTz: true }).notNullable();
-      table.timestamp("updated_at", { useTz: true }).notNullable();
+      table.timestamp("created_at", { useTz: true }).notNullable().defaultTo(this.now());
+      table.timestamp("updated_at", { useTz: true }).notNullable().defaultTo(this.now());
+
     });
   }
 

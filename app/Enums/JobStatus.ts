@@ -1,6 +1,6 @@
-enum JobStatus {
-    Unpublished = 0,
-    Published = 1,
-}
+// enum JobStatus {
+//     OPEN = 0,
+//     CLOSED = 1,
+// }
 
-export default JobStatus;
+// export default JobStatus;

@@ -10,7 +10,7 @@ export default class Job extends BaseModel {
   public userId: string
 
   @column()
-  public typeClothId: string
+  public clothType: number
 
   @column()
   public location: string
@@ -19,10 +19,10 @@ export default class Job extends BaseModel {
   public description: string
 
   @column()
-  public budget: string
+  public budget: number
 
   @column()
-  public status: string //published or unpublished 
+  public status: boolean // open - true, closed - false
 
   @column()
   public quotationCount: number

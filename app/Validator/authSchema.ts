@@ -1,6 +1,6 @@
 import { rules, schema } from "@ioc:Adonis/Core/Validator";
 
-export const registerUserSchema = schema.create({
+export const authSchema = schema.create({
   email: schema.string({ trim: true }, [
     rules.required(),
     rules.email(),
@@ -10,18 +10,5 @@ export const registerUserSchema = schema.create({
     rules.required(),
     rules.minLength(6)
   ]),
-  roleId: schema.number([rules.exists({ table: "roles", column: "id" })]),
 });
 
-
-
-export const loginUserSchema = schema.create({
-  email: schema.string({ trim: true }, [
-    rules.required(),
-    rules.email(),
-  ]),
-  password: schema.string({ trim: true }, [
-    rules.required(),
-    rules.minLength(6)
-  ]),
-});
