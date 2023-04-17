@@ -1,13 +1,16 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
 
 export default class extends BaseSchema {
-  protected tableName = 'job_images'
+  protected tableName = 'quotations'
 
   public async up () {
     this.schema.createTable(this.tableName, (table) => {
-      table.increments('id')
-      table.integer('job_id')
-      table.string('image_url')
+      table.uuid('id').primary()
+      table.uuid('job_id').notNullable()
+      table.uuid('user_id').notNullable()
+      table.integer('bit').notNullable()
+      table.string('status').defaultTo('pending')
+      table.string('message').notNullable( )
 
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL

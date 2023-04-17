@@ -1,12 +1,13 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, beforeCreate, column } from '@ioc:Adonis/Lucid/Orm'
+import { v4 as uuid } from 'uuid'
 
 export default class Job extends BaseModel {
   @column({ isPrimary: true })
-  public id: number
+  public id: string
 
   @column()
-  public userId: number
+  public userId: string
 
   @column()
   public typeClothId: string
@@ -27,4 +28,10 @@ export default class Job extends BaseModel {
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime
 
+  @beforeCreate()
+  public static async generateUuid(model: Job) {
+    model.id = uuid()
+  }
+
 }
+

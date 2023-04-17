@@ -28,8 +28,4 @@ export const userValidationSchema = schema.create({
   zip: schema.string({ trim: true }, [
     rules.required(), 
     rules.maxLength(50)]),
-  country: schema.string({ trim: true }, [
-    rules.required(),
-    rules.maxLength(50),
-  ]),
 });
