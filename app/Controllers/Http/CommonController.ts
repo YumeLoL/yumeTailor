@@ -29,4 +29,6 @@ export default class CommonController {
 
     return response.json({ jobs });
   }
+
+
 }

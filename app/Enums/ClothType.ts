@@ -1,9 +1,9 @@
 enum ClothType {
-  Shirt = "type01",
-  Pants = "type02",
-  Dress = "type03",
-  Jacket = "type04",
-  Shoes = "type05",
+  SHIRT = 1001,
+  PANTS = 1002,
+  DRESS = 1003,
+  JACKET = 1004,
+  SHOES = 1005,
 }
 
 export default ClothType;

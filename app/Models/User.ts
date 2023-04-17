@@ -9,7 +9,7 @@ export default class User extends BaseModel {
   public id: string
 
   @column()
-  public roleId: number
+  public role: number
 
   @column()
   public email: string
@@ -35,12 +35,6 @@ export default class User extends BaseModel {
 
   @beforeCreate()
   public static async generateUuid(model: User) {
-    if(model.roleId === 1){
-      model.id = `ADMIN_${uuid()}`
-    } else if(model.roleId === 2){
-      model.id = `CONSUMER_${uuid()}`
-    } else if(model.roleId === 3){
-      model.id = `MAKER_${uuid()}`
-    }
+    model.id = `${model.role}_${uuid()}`
   }
 }

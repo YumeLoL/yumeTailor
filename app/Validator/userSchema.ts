@@ -9,23 +9,12 @@ export const userValidationSchema = schema.create({
     rules.required(),
     rules.maxLength(50),
   ]),
-  phone: schema.string({ trim: true }, [
-    rules.required(), 
-    rules.mobile()
-  ]),
+  phone: schema.string({ trim: true }, [rules.required(), rules.mobile()]),
   address: schema.string({ trim: true }, [
     rules.required(),
     rules.maxLength(255),
   ]),
-  city: schema.string({ trim: true }, [
-    rules.required(), 
-    rules.maxLength(100)
-]),
-  state: schema.string({ trim: true }, [
-    rules.required(),
-    rules.maxLength(50),
-  ]),
-  zip: schema.string({ trim: true }, [
-    rules.required(), 
-    rules.maxLength(50)]),
+  city: schema.string({ trim: true }, [rules.required(), rules.maxLength(100)]),
+  state: schema.string({ trim: true }, [rules.required(), rules.maxLength(50)]),
+  zip: schema.string({ trim: true }, [rules.required(), rules.maxLength(50)]),
 });

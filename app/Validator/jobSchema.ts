@@ -1,12 +1,8 @@
 import { rules, schema } from "@ioc:Adonis/Core/Validator";
 
 
-const statusValues = ['published', 'unpublished'];
-
 export const jobSchema = schema.create({
-  typeClothId: schema.string(),
+  location: schema.string({ trim: true }, [rules.required()]),
   description: schema.string({ trim: true }, [rules.required()]),
-  budget: schema.string(),
-  imagesUrl: schema.array().members(schema.string()),
-  status: schema.enum(["published", "unpublished"]),
+  budget: schema.number([rules.required()]),
 });
