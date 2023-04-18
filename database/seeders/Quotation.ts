@@ -8,7 +8,7 @@ export default class extends BaseSeeder {
       id: 'QUOTE_axy',
       jobId: 'JOB_aaa',
       userId: 'USER_3_www',
-      bit: 100,
+      bid: 100,
       status: 2001,
       message: 'I can do it'
     })
@@ -17,7 +17,7 @@ export default class extends BaseSeeder {
       id: 'QUOTE_geljr',
       jobId: 'JOB_bbb',
       userId: 'USER_3_mmm',
-      bit: 200,
+      bid: 200,
       status: 2001,
       message: 'I can do it'
     })
@@ -26,7 +26,7 @@ export default class extends BaseSeeder {
       id: 'QUOTE_42wetw',
       jobId: 'JOB_aaa',
       userId: 'USER_3_mmm',
-      bit: 60,
+      bid: 60,
       status: 2001,
       message: 'I can do it as well '
     })
@@ -35,7 +35,7 @@ export default class extends BaseSeeder {
       id: 'QUOTE_geljr',
       jobId: 'JOB_ddd',
       userId: 'USER_3_mmm',
-      bit: 120,
+      bid: 120,
       status: 2001,
       message: 'I can do it'
     })

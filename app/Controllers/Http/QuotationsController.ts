@@ -32,18 +32,18 @@ export default class QuotationsController {
    * @returns
    */
   public async store({ params, request, response }: HttpContextContract) {
-    const quote = request.all();
-    quote.jobId = params.jobId;
-    quote.userId = request.input("user_id");
+    const quoteQuery = request.all();
+    quoteQuery.jobId = params.jobId;
+    quoteQuery.userId = request.input("user_id");
 
     await request.validate(QuoteValidator);
-    const validatedData = await Quotation.create(quote);
+    const quotation = await Quotation.create(quoteQuery);
 
     const job = await Job.findOrFail(params.jobId);
     job.quotationCount++;
     await job.save();
 
-    return response.status(201).json({ validatedData });
+    return response.status(201).json({ quotation });
   }
 
   /**
@@ -98,30 +98,31 @@ export default class QuotationsController {
 
 
   /**
-   * update a status (pending, accepted or rejected)
+   * update a status only by user(consumer who created the job)(pending, accepted or rejected)
    * @param param0
    * @returns
    */
   public async update({ params, request, response }: HttpContextContract) {
-    const quote = await Quotation.findOrFail(params.quotationId);
-    const job = await Job.findByOrFail("user_id", params.userId);
+      const quote = await Quotation.findOrFail(params.quotationId);
+      if(!quote){
+          return response.status(404).json({ message: "Quotation not found" });
+      }
 
-    if(!quote){
-        return response.status(404).json({ message: "Quotation not found" });
-    }
-
-    if(!job){
-        return response.status(404).json({ message: "Job not found" });
-    }
-
-    if(job.userId !== params.userId){
-        return response.status(400).json({ message: "Invalid user id" });
-    }
-
-    quote.status = request.input("status");
-    await quote.save();
-
-    return response.json({ quote, message: "Quotation status updated successfully" });
+      const job = await Job.findOrFail(quote.jobId)
+      if(!job){
+          return response.status(404).json({ message: "Job not found" });
+      }
+  
+      if(job.userId !== params.userId){
+          return response.status(400).json({ message: "Invalid user id" });
+      }
+  
+      quote.status = request.input("status");
+      await quote.save();
+  
+      return response.json({ quote, message: "Quotation status updated successfully" })
+   
+   ;
   }
  
 }

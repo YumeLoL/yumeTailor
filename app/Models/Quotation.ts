@@ -13,7 +13,7 @@ export default class Quotation extends BaseModel {
   public userId: string; // maker
 
   @column()
-  public bit: number;
+  public bid: number;
 
   @column()
   public status: number; // PENDING 2001, ACCEPTED 2002, REJECTED 2003

@@ -9,7 +9,7 @@ export default class extends BaseSchema {
       table.string('id').primary()
       table.string('job_id').notNullable()
       table.string('user_id').notNullable()
-      table.decimal('bit').notNullable()
+      table.decimal('bid').notNullable()
       table.integer('status').notNullable().defaultTo(QuoteStatus.PENDING)
       table.string('message').notNullable( )
 

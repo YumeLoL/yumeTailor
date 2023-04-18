@@ -2,7 +2,7 @@ import type { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 import Roles from "App/Enums/Roles";
 import User from "App/Models/User";
 import UserDetail from "App/Models/UserDetail";
-import { userValidationSchema } from "App/Validator/userSchema";
+import UserValidator from "App/Validators/UserValidator";
 
 export default class UsersController {
   /**
@@ -39,10 +39,7 @@ export default class UsersController {
    * @returns
    */
   public async store({ request, response, params }: HttpContextContract) {
-    const validatedData = await request.validate({
-      schema: userValidationSchema,
-      messages: { required: "The {{ field }} field is required" },
-    });
+    const validatedData = await request.validate(UserValidator)
     const userId = params.userId;
 
     let userDetails = await UserDetail.findBy("user_id", userId);
