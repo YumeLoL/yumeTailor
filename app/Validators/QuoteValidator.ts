@@ -5,20 +5,19 @@ export default class QuoteValidator {
   constructor(protected ctx: HttpContextContract) {}
 
   public schema = schema.create({
-    jobId: schema.string.optional({}, [rules.required()]),
-    userId: schema.string.optional({}, [rules.required()]),
+    jobId: schema.string.optional({}, [rules.exists({ table: "jobs", column: "id" })]),
+    userId: schema.string.optional({}, [rules.exists({ table: "users", column: "id" })]),
     bit: schema.number([rules.required()]),
     status: schema.number([rules.required(), rules.range(2001, 2003)]),
     message: schema.string({}, [rules.maxLength(255)]),
   });
 
   public messages: CustomMessages = {
-    "jobId.required": "Job ID is required",
-    "userId.required": "User ID is required",
+    "jobId.exists": "Job ID is not exists",
+    "userId.exists": "User ID is not exists",
     "bit.required": "Bit is required",
     "status.required": "Status is required",
-    "message.required": "Message is required",
-    "bit.range": "Bit should be between 1 and 100",
-    "id.uuid": "Invalid UUID format",
+    "status.range": "Status should be between 2001 and 2003",
+    "message.maxLength": "Message should be less than 255 characters",
   };
 }
