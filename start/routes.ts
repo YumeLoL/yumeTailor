@@ -5,6 +5,7 @@ Route.post("api/auth/register", "AuthController.register");
 Route.post("api/auth/login", "AuthController.login");
 Route.get("api/auth/logout", "AuthController.logout");
 
+
 // user management api - admin, consumer, maker
 Route.group(() => {
   Route.get(":userId", "UsersController.index"); // get user details
@@ -44,8 +45,6 @@ Route.group(() => {
 // .middleware("auth");
 
 
-// cloth type api
-Route.get("api/cloth_types", "ClothTypesController.index");
 
 // image upload api
-Route.post("api/images/:jobId", "ImagesController.upload");
+// Route.post("api/images/:jobId", "ImagesController.upload");
