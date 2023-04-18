@@ -1,103 +1,127 @@
-import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import Job from 'App/Models/Job';
-import Quotation from 'App/Models/Quotation';
+import type { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
+import Job from "App/Models/Job";
+import Quotation from "App/Models/Quotation";
+import QuoteValidator from "App/Validators/QuoteValidator";
 
 export default class QuotationsController {
-    /**
-     * show all quotations under a job id
-     * @param param0 
-     * @returns 
-     */
-    public async index({params, response}: HttpContextContract) {
-        const quotations = await Quotation.query()
-            .where('job_id', params.jobId)
-            .orderBy('created_at', 'desc');
-        return response.json({quotations});
-    }
-    
+  /**
+   * list all quotations, filter by quotation status
+   * @param param0
+   * @returns
+   */
+  public async index({ request, response }: HttpContextContract) {
+    const { page, limit, status } = request.qs();
 
-    /**
-     * create a new quotation under a job id and user id
-     * @param param0 
-     * @returns 
-     */
-    public async store({params, request, response}: HttpContextContract) {
-        const validatedData = {
-            userId: request.input('user_id'),
-            bit: request.input('bit'),
-            status: request.input('status'),
-            message: request.input('message')
-        };
-        const quotation = new Quotation();
-        quotation.jobId = params.jobId;
-        quotation.userId = validatedData.userId;
-        quotation.bit = validatedData.bit;
-        quotation.status = validatedData.status;
-        quotation.message = validatedData.message;
-        await quotation.save();
+    const quoteQuery = Quotation.query()
+      .select("quotations.*")
+      .orderBy("created_at", "desc");
 
-        const job = await Job.findOrFail(params.jobId);
-        job.quotationCount ++;
-        await job.save();
+    // Filter by status
+    if (status) {
+      quoteQuery.where("status", status);
+    }
 
-        return response.status(201).json({quotation});
-    }
-    
-    
-    /**
-     * show a quotation by quotation id
-     * @param param0 
-     * @returns 
-     */
-    public async show({params, response}: HttpContextContract) {
-        try {
-            const quotation = await Quotation.findOrFail(params.quotationId);
-            return response.json({quotation});
-        } catch (error) {
-            return response.status(404).json({message: 'Quotation not found'});
-        }
-    }
-    
-    
-    /**
-     * update a quotation by quotation id
-     * @param param0 
-     * @returns 
-     */
-    public async update({params, request, response}: HttpContextContract) {
-        const validatedData = {
-            userId: request.input('user_id'),
-            bit: request.input('bit'),
-            status: request.input('status'), 
-            message: request.input('message')
-        };
-        try {
-            const quotation = await Quotation.findOrFail(params.quotationId);
-            quotation.userId = validatedData.userId;
-            quotation.bit = validatedData.bit;
-            quotation.status = validatedData.status;
-            quotation.message = validatedData.message;
-            await quotation.save();
-            return response.json({quotation});
-        }
-        catch (error) {
-            return response.status(404).json({message: 'Quotation not found'});
-        }
-    }
-    
+    // Paginate the results
+    const quotes = await quoteQuery.paginate(page || 1, limit || 10);
+    return response.json({ quotes });
+  }
 
-    /**
-     * delete a Quotation by its id
-     * @param param0 
-     */
-    public async destroy({params, response}: HttpContextContract) {
-        try {
-            const quotation = await Quotation.findOrFail(params.quotationId);
-            await quotation.delete();
-            return response.status(204).json({message: 'Quotation deleted'});
-        } catch (error) {
-            return response.status(404).json({message: 'Quotation not found'});
-        }
+  /**
+   * create a new quotation under a job id by user
+   * @param param0
+   * @returns
+   */
+  public async store({ params, request, response }: HttpContextContract) {
+    const quote = request.all();
+    quote.jobId = params.jobId;
+    quote.userId = request.input("user_id");
 
+    await request.validate(QuoteValidator);
+    const validatedData = await Quotation.create(quote);
+
+    const job = await Job.findOrFail(params.jobId);
+    job.quotationCount++;
+    await job.save();
+
+    return response.status(201).json({ validatedData });
+  }
+
+  /**
+   * show a quotation by quotation id
+   * @param param0
+   * @returns
+   */
+  public async show({ params, response }: HttpContextContract) {
+    try {
+      const quotation = await Quotation.findOrFail(params.quotationId);
+      return response.json({ quotation });
+    } catch (error) {
+      return response.status(404).json({ message: "Quotation not found" });
     }
+  }
+
+
+  /**
+   * show all quotations by a user id or job id
+   * @param param0
+   * @returns
+   */
+  public async showAll({ params, response }: HttpContextContract) {
+    let prefix = params.id.substring(0, 4);
+    let flag: number
+
+    if (prefix === "JOB_") {
+      flag = 1;
+    } else if (prefix === "USER") {
+      flag = 0;
+    } else {
+        return response.status(400).json({ message: "Invalid ID" });
+    }
+
+    try {
+      const quotations = await Quotation.query()
+        .where((flag ? "job_id" : "user_id"), params.id)
+        .orderBy("created_at", "desc");
+
+      if (quotations.length === 0) {
+        return response.json({
+          quotations,
+          message: "No quotations found",
+        });
+      }
+
+      return response.json({ quotations });
+    } catch (error) {
+      return response.status(500).json({ message: "Server error" });
+    }
+  }
+
+
+  /**
+   * update a status (pending, accepted or rejected)
+   * @param param0
+   * @returns
+   */
+  public async update({ params, request, response }: HttpContextContract) {
+    const quote = await Quotation.findOrFail(params.quotationId);
+    const job = await Job.findByOrFail("user_id", params.userId);
+
+    if(!quote){
+        return response.status(404).json({ message: "Quotation not found" });
+    }
+
+    if(!job){
+        return response.status(404).json({ message: "Job not found" });
+    }
+
+    if(job.userId !== params.userId){
+        return response.status(400).json({ message: "Invalid user id" });
+    }
+
+    quote.status = request.input("status");
+    await quote.save();
+
+    return response.json({ quote, message: "Quotation status updated successfully" });
+  }
+ 
 }
