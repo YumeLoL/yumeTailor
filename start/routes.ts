@@ -32,13 +32,15 @@ Route.group(() => {
 
 
 // quotation management api
-// Route.group(() => {
-//   Route.get("job/:jobId", "QuotationsController.index"); // show all quotations under a job id
-//   Route.post("job/:jobId", "QuotationsController.store"); // Create a new quotation under a job by user
-//   Route.get(":quotationId", "QuotationsController.show"); // show a quotation by quotation id
-//   Route.put(":quotationId", "QuotationsController.update"); // update a quotation by quotation id
-//   Route.delete(":quotationId", "QuotationsController.destroy"); // delete a quotation by quotation id
-// }).prefix("api/quotation");
+ Route.group(() => {
+   Route.get("/search", "QuotationsController.index"); // show all quotations filter by status
+
+   Route.post("job/:jobId", "QuotationsController.store"); // Create a new quotation under a job by user
+   Route.get(":quotationId", "QuotationsController.show"); // show a quotation by quotation id
+   Route.get("all/:id", "QuotationsController.showAll"); // show all quotations under a job id
+
+   Route.put(":userId/status/:quotationId", "QuotationsController.update"); // update a quotation by quotation id
+}).prefix("api/quotation");
 // .middleware("auth");
 
 

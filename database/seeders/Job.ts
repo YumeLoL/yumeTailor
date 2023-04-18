@@ -5,8 +5,8 @@ export default class extends BaseSeeder {
   public async run () {
     // Write your database queries inside the run method
     await Job.create({
-      id: 'JOB_1',
-      userId: 'CONSUMER_1',
+      id: 'JOB_aaa',
+      userId: 'USER_2_yyy',
       clothType: 1001,
       location: 'Kuala Lumpur',
       description: 'I need a shirt',
@@ -16,8 +16,8 @@ export default class extends BaseSeeder {
     })
 
     await Job.create({
-      id: 'JOB_2',
-      userId: 'CONSUMER_1',
+      id: 'JOB_bbb',
+      userId: 'USER_2_yyy',
       clothType: 1002,
       location: 'Melbourne',
       description: 'I need a pants',
@@ -27,8 +27,8 @@ export default class extends BaseSeeder {
     })
 
     await Job.create({
-      id: 'JOB_2',
-      userId: 'CONSUMER_2',
+      id: 'JOB_ccc',
+      userId: 'USER_2_yyy',
       clothType: 1003,
       location: 'Melbourne',
       description: 'I need a dress',
@@ -38,8 +38,8 @@ export default class extends BaseSeeder {
     })
 
     await Job.create({
-      id: 'JOB_2',
-      userId: 'CONSUMER_2',
+      id: 'JOB_ddd',
+      userId: 'USER_2_zzz',
       clothType: 1004,
       location: 'Melbourne',
       description: 'I need a jacket',
@@ -49,8 +49,8 @@ export default class extends BaseSeeder {
     })
 
     await Job.create({
-      id: 'JOB_2',
-      userId: 'CONSUMER_2',
+      id: 'JOB_eee',
+      userId: 'USER_2_zzz',
       clothType: 1005,
       location: 'Melbourne',
       description: 'I need a shoes',

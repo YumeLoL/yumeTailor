@@ -7,7 +7,7 @@ export default class extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.string("id").primary();
       table.string("user_id").notNullable();
-      table.integer("cloth_type");
+      table.integer("cloth_type").notNullable();
       table.string("location").notNullable();
       table.string("description").notNullable();
       table.decimal("budget").notNullable();

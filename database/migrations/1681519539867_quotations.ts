@@ -1,4 +1,5 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
+import QuoteStatus from 'App/Enums/QuoteStatus'
 
 export default class extends BaseSchema {
   protected tableName = 'quotations'
@@ -8,8 +9,8 @@ export default class extends BaseSchema {
       table.string('id').primary()
       table.string('job_id').notNullable()
       table.string('user_id').notNullable()
-      table.integer('bit').notNullable()
-      table.string('status').defaultTo('pending')
+      table.decimal('bit').notNullable()
+      table.integer('status').notNullable().defaultTo(QuoteStatus.PENDING)
       table.string('message').notNullable( )
 
       /**

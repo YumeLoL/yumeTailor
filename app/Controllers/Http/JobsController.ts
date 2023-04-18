@@ -1,7 +1,6 @@
 import type { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
-import ClothType from "App/Enums/ClothType";
 import Job from "App/Models/Job";
-import { jobSchema } from "App/Validator/jobSchema";
+import { jobSchema } from "App/Validators/jobSchema";
 
 export default class JobsController {
   /**
@@ -96,7 +95,12 @@ export default class JobsController {
     return response.json({ job });
   }
 
-
+  
+  /**
+   * 
+   * @param param0 
+   * @returns 
+   */
   public async updateStatus({ params, request, response }: HttpContextContract) {
     const job = await Job.findOrFail(params.jobId);
 

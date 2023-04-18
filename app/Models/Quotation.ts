@@ -10,13 +10,13 @@ export default class Quotation extends BaseModel {
   public jobId: string;
 
   @column()
-  public userId: string;
+  public userId: string; // maker
 
   @column()
   public bit: number;
 
   @column()
-  public status: string; // pending, accepted, rejected
+  public status: number; // PENDING 2001, ACCEPTED 2002, REJECTED 2003
 
   @column()
   public message: string;
