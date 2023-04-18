@@ -1,6 +1,6 @@
 import type { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 import Job from "App/Models/Job";
-import { jobSchema } from "App/Validators/jobSchema";
+import JobValidator from "App/Validators/JobValidator";
 
 export default class JobsController {
   /**
@@ -40,26 +40,25 @@ export default class JobsController {
    */
   public async store({ params, request, response }: HttpContextContract) {
     try {
-      const validatedData = await request.validate({
-        schema: jobSchema,
-        messages: {
-          required: "The {{ field }} field is required",
-        },
-      });
+      const jobData = request.all();
+      jobData.userId = params.userId;
 
-      const job = new Job();
-      job.userId = params.userId;
-      job.clothType = request.input("cloth_type");
-      job.location = validatedData.location;
-      job.description = validatedData.description;
-      job.budget = validatedData.budget;
-      job.status = true;
-      job.quotationCount = 0;
-      await job.save();
+      const { userId, clothType, location, description, budget } =
+        await request.validate(JobValidator);
+
+      const job = await Job.create({
+        userId,
+        clothType,
+        location,
+        description,
+        budget,
+        status: true,
+        quotationCount: 0,
+      });
 
       return response.status(201).json({ job });
     } catch (error) {
-      // handle the error here
+      return response.status(422).json({ errors: error.messages });
     }
   }
 
@@ -69,47 +68,47 @@ export default class JobsController {
    * @returns
    */
   public async edit({ params, request, response }: HttpContextContract) {
-    const validatedData = await request.validate({
-      schema: jobSchema,
-      messages: {
-        required: "The {{ field }} field is required",
-      },
-    });
+    try {
+      const job = await Job.findOrFail(params.jobId);
+      if (job.userId !== params.userId) {
+        return response
+          .status(403)
+          .json({ message: "You are not authorized to update this job" });
+      }
 
-    const job = await Job.findOrFail(request.input("job_id"));
+      const jobData = request.all();
+      await request.validate(JobValidator);
 
-    if (!job) {
-      return response.status(404).json({ message: "Job not found" });
+      job.merge(jobData);
+
+      await job.save();
+
+      return response.json({ job });
+    } catch (error) {
+      return response.status(422).json({ errors: error.messages });
     }
-  
-    if (job.userId !== params.userId) {
-      return response.status(403).json({ message: "You are not authorized to update this job" });
-    }
-
-    job.clothType =  request.input("cloth_type");
-    job.location = validatedData.location;
-    job.description = validatedData.description;
-    job.budget = validatedData.budget;
-    await job.save();
-
-    return response.json({ job });
   }
 
-  
   /**
-   * 
-   * @param param0 
-   * @returns 
+   *
+   * @param param0
+   * @returns
    */
-  public async updateStatus({ params, request, response }: HttpContextContract) {
+  public async updateStatus({
+    params,
+    request,
+    response,
+  }: HttpContextContract) {
     const job = await Job.findOrFail(params.jobId);
 
     if (!job) {
       return response.status(404).json({ message: "Job not found" });
     }
-  
+
     if (job.userId !== params.userId) {
-      return response.status(403).json({ message: "You are not authorized to update this job" });
+      return response
+        .status(403)
+        .json({ message: "You are not authorized to update this job" });
     }
 
     job.status = request.input("status");
@@ -136,14 +135,14 @@ export default class JobsController {
   public async show({ params, response }: HttpContextContract) {
     try {
       const job = await Job.findBy("id", params.jobId);
-      
+
       if (job) {
         return response.json({ job });
       }
 
-      return response.status(404).json({ message: 'Job not found' });
+      return response.status(404).json({ message: "Job not found" });
     } catch (error) {
-      return response.status(500).json({ message: 'Something went wrong' });
+      return response.status(500).json({ message: "Something went wrong" });
     }
   }
 
@@ -157,9 +156,11 @@ export default class JobsController {
 
     // Check if the authenticated user is the creator of the job
     if (job.userId !== params.userId) {
-      return response.status(403).json({ message: "You are not authorized to delete this job" });
+      return response
+        .status(403)
+        .json({ message: "You are not authorized to delete this job" });
     }
-  
+
     await job.delete();
     return response.json({ message: "Job deleted successfully" });
   }
