@@ -39,10 +39,11 @@ Route.group(() => {
   Route.put(":userId/status/:quotationId", "QuotationsController.update"); // update a quotation by quotation id
 }).prefix("api/quotation");
 
-function middleware(arg0: string) {
-  throw new Error("Function not implemented.");
-}
+
 // .middleware("auth");
 
 // image upload api
 // Route.post("api/images/:jobId", "ImagesController.upload");
+
+
+Route.get("api/location", "CommonsController.getLocations");

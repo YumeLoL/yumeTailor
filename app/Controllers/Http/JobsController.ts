@@ -49,7 +49,7 @@ export default class JobsController {
       const job = await Job.create({
         userId,
         clothType,
-        location,
+        location: location.toLowerCase(),
         description,
         budget,
         status: true,
