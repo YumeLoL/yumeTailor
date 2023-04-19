@@ -44,11 +44,12 @@ export default class JobsController {
       const jobData = request.all();
       jobData.userId = params.userId;
 
-      const { userId, clothType, location, description, budget } =
+      const { userId, name, clothType, location, description, budget } =
         await request.validate(JobValidator);
 
       const job = await Job.create({
         userId,
+        name,
         clothType,
         location: location.toLowerCase(),
         description,

@@ -7,6 +7,7 @@ export default class extends BaseSeeder {
     await Job.create({
       id: 'JOB_aaa',
       userId: 'USER_2_yyy',
+      name: 'custom a shirt',
       clothType: 1001,
       location: 'Kuala Lumpur',
       description: 'I need a shirt',
@@ -18,6 +19,7 @@ export default class extends BaseSeeder {
     await Job.create({
       id: 'JOB_bbb',
       userId: 'USER_2_yyy',
+      name: 'custom a pants',
       clothType: 1002,
       location: 'Melbourne',
       description: 'I need a pants',
@@ -29,6 +31,7 @@ export default class extends BaseSeeder {
     await Job.create({
       id: 'JOB_ccc',
       userId: 'USER_2_yyy',
+      name: 'custom a dress',
       clothType: 1003,
       location: 'Melbourne',
       description: 'I need a dress',
@@ -40,6 +43,7 @@ export default class extends BaseSeeder {
     await Job.create({
       id: 'JOB_ddd',
       userId: 'USER_2_zzz',
+      name: 'custom a jacket',
       clothType: 1004,
       location: 'Melbourne',
       description: 'I need a jacket',
@@ -51,6 +55,7 @@ export default class extends BaseSeeder {
     await Job.create({
       id: 'JOB_eee',
       userId: 'USER_2_zzz',
+      name: 'custom a shoes',
       clothType: 1005,
       location: 'Melbourne',
       description: 'I need a shoes',

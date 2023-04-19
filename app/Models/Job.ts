@@ -10,6 +10,9 @@ export default class Job extends BaseModel {
   public userId: string
 
   @column()
+  public name: string
+
+  @column()
   public clothType: number
 
   @column()
