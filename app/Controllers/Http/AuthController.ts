@@ -10,7 +10,7 @@ export default class AuthController {
    * @returns
    */
   public async login({ request, auth, response }: HttpContextContract) {
-    try {
+   try {
       const { loginSchema, messages } = new AuthValidator({} as any);
       // Validate the request data
       const { email, password } = await request.validate({
@@ -23,15 +23,17 @@ export default class AuthController {
         expiresIn: "10 days",
       });
 
+      
       // Retrieve the user by email
       const user = await User.findByOrFail("email", email);
+     
 
       // Save the user's id to the auth object
       await auth.use("api").login(user);
 
-      return token.toJSON();
+      return {code: 1, data:token.toJSON(), message: "Login successfully"};
     } catch (error) {
-      response.status(error.status).send({ message: error.message });
+      response.status(error.status).send({ error: error.message.split(': ')[1] });
     }
   }
 

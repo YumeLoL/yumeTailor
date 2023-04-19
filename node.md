@@ -1,6 +1,6 @@
 
 
-## Backend 
+# Backend 
 
 - Typescript 
 - Lucid ORM
@@ -10,7 +10,7 @@
 
 
 
-Submission Details:
+## Submission Details:
 
 1. GitHub link (backend only):  https://github.com/YumeLoL/yumeTailor
 
@@ -347,36 +347,30 @@ Submission Details:
 
 
 
-4. Deploy the app in any of the Cloud platforms (e.g. AWS, Vercel, Azure)
-● Create a document with the following.
-○ Links to GitHub (Code needs to be accessible)
-○ Link to the URL for the front-end
-○ List of URL, routes for the Rest API and the expected JSON input
-○ Write down any assumptions to make
-○ Write any questions you have.
-○ Write a paragraph about your key learning from this exercise. Keep this in bullet
-points.
-○ Write a paragraph
+## Write any questions you have
 
+- Endpoints: for the backend development, I always get confused about how to define the endpoints to keep it simple and easy to understand. For example, if the API needs more than one ID with data passing from front-end, which field should be carried within the URL as params, which field should be leave in the request body.
 
+- Error handling: how to properly handle errors in AdonisJS, I need to practice more about handle exception.
 
-Programming Task
-User-Story #1
-As a Consumer, I want to go to a page, post a job and get notified with the quotes.
-Acceptance Criteria
+- Data protection: don't know about how to handle security and data protection. For example, userId as params passing with URL, is that secure.
 
-1. The consumer must be able to specify their first name, last name, phone number, and
-  email address, address (including postcode and state), select the types of clothing (e.g.
-  Dress, Ethnic Wear - Sari / Blouse), upload several images representing the type of
-  clothing they want to get made, enter a description of their making in plain text, and
-  specify a budget (optional).
-  User Story #2
-  As a Maker, I want to list all the available jobs, filter jobs by location and types of clothing, see
-  the total count of quotations for jobs, and send a quote.
-  Acceptance Criteria:
-2. The maker must be able to list all jobs and view information such as the types of making,
-  making, status, count of quotations, location, etc.
-3. The maker must be able to select a specific job and see all the details the Customer
-  provides.
-3. The maker must be able to send a quotation, including a price and any other comments;
-the system would notify the customer by email.
+- Table relationship: should I use foreign key or not. I don't use foreign key in this project because I might be always modify the table field and code. While in the practice, which method is good.
+
+  
+
+## Key learning
+
+- Learnt using AdonisJS framework to simplify the development process, it provides a set of tools. 
+
+- The routing system, it defines routes with ease, such as route grouping, named routes.
+
+- Learnt the middleware like validator to validate incoming requests. 
+
+- Learnt Lucid ORM for interacting with databases. 
+
+  
+
+## Areas you want to learn further and focus on during this internship
+
+I'm really interested in pursuing a career in web development, and I'm excited to start this internship to learn more about the industry. While I'm interested in all aspects of web development, I'm particularly drawn to the back-end. I'm eager to learn more about databases, API development, and server-side scripting languages. That being said, I'm not limited to just the back-end and I'm also excited to explore front-end development and gain a more well-rounded skill set. 
