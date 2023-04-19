@@ -2,10 +2,6 @@ import * as React from 'react';
 import AppBar from '@mui/material/AppBar';
 import Button from '@mui/material/Button';
 import CameraIcon from '@mui/icons-material/PhotoCamera';
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
 import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
@@ -20,12 +16,13 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import styled from "styled-components";
 import axiosInstance from '../api/axios';
 import { getJobs } from '../api/httpRequest';
-import { JobParamsType } from '@/models/job';
+import Divider from '@mui/material/Divider';
+import Pagination from '@mui/material/Pagination';
+import { IJob } from '@/models/job';
+import { clothType, IClothType } from '@/constant/clothType';
+import { getLabelById } from '@/tools/common';
+import JobCard from '@/components/JobCard';
 
-interface IClothType {
-  label: string;
-  id: number;
-}
 
 function Copyright() {
   return (
@@ -40,27 +37,9 @@ function Copyright() {
   );
 }
 
-const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 const theme = createTheme()
 
-const clothType: IClothType[] = [
-  {
-    label: 'Shirt', id: 1001
-  },
-  {
-    label: 'Pants', id: 1002
-  },
-  {
-    label: 'Dress', id: 1003
-  },
-  {
-    label: 'Jacket', id: 1004
-  },
-  {
-    label: 'Shoes', id: 1005
-  }
-]
 
 const MakerHome = () => {
   const [value, setValue] = React.useState<number | null>();
@@ -71,8 +50,8 @@ const MakerHome = () => {
     limit: 10,
     location: location,
     type: value
-})
-const [jobData, setJobData] = React.useState();
+  })
+  const [jobData, setJobData] = React.useState<any>();
 
 
   // get location list
@@ -96,10 +75,10 @@ const [jobData, setJobData] = React.useState();
     const fetchData = async () => {
       try {
         const response = await getJobs({
-            page: pagination.page,
-            limit: pagination.limit,
-            location: pagination.location,
-            type: pagination.type
+          page: pagination.page,
+          limit: pagination.limit,
+          location: pagination.location,
+          type: pagination.type
         });
         if (response.data.status === 200) {
           setJobData(response.data.data)
@@ -158,40 +137,38 @@ const [jobData, setJobData] = React.useState();
               don&apos;t simply skip over it entirely.
             </Typography>
             <Stack
-              sx={{ pt: 4 }}
               direction="row"
+              divider={<Divider orientation="vertical" flexItem />}
               spacing={2}
-              justifyContent="center"
             >
-              <SearchBar>
-                <Autocomplete
-                  onChange={(event, newValue: IClothType | null) => {
-                    if (newValue) {
-                      setValue(newValue.id);
-                    } else {
-                      setValue(null);
-                    }
-                  }}
-                  id="combo-box-demo"
-                  options={clothType}
-                  sx={{ width: 300 }}
-                  renderInput={(params) => <TextField {...params} label="Cloth Type" />}
-                />
-                <Autocomplete
-                  onChange={(event, newValue: string | null) => {
-                    if (newValue) {
-                      setLocation(newValue);
-                    } else {
-                      setLocation('');
-                    }
-                  }}
-                  id="free-solo-demo"
-                  freeSolo
-                  options={locationList.map((option) => option)}
-                  renderInput={(params) => <TextField {...params} label="Location" />}
-                />
-                <Button variant="outlined" onClick={handleSearch}>Search</Button>
-              </SearchBar>
+              <Autocomplete
+                onChange={(event, newValue: IClothType | null) => {
+                  if (newValue) {
+                    setValue(newValue.id);
+                  } else {
+                    setValue(null);
+                  }
+                }}
+                id="combo-box-demo"
+                options={clothType}
+                sx={{ width: 150 }}
+                renderInput={(params) => <TextField {...params} label="Cloth Type" />}
+              />
+              <Autocomplete
+                onChange={(event, newValue: string | null) => {
+                  if (newValue) {
+                    setLocation(newValue);
+                  } else {
+                    setLocation('');
+                  }
+                }}
+                id="free-solo-demo"
+                freeSolo
+                options={locationList.map((option) => option)}
+                sx={{ width: 230 }}
+                renderInput={(params) => <TextField {...params} label="Location" />}
+              />
+              <Button variant="outlined" onClick={handleSearch}>Search</Button>
 
             </Stack>
           </Container>
@@ -199,37 +176,16 @@ const [jobData, setJobData] = React.useState();
         <Container sx={{ py: 8 }} maxWidth="md">
           {/* End hero unit */}
           <Grid container spacing={4}>
-            {cards.map((card) => (
-              <Grid item key={card} xs={12} sm={6} md={4}>
-                <Card
-                  sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
-                >
-                  <CardMedia
-                    component="img"
-                    sx={{
-                      // 16:9
-                      pt: '56.25%',
-                    }}
-                    image="https://source.unsplash.com/random"
-                    alt="random"
-                  />
-                  <CardContent sx={{ flexGrow: 1 }}>
-                    <Typography gutterBottom variant="h5" component="h2">
-                      Heading
-                    </Typography>
-                    <Typography>
-                      This is a media card. You can use this section to describe the
-                      content.
-                    </Typography>
-                  </CardContent>
-                  <CardActions>
-                    <Button size="small">View</Button>
-                    <Button size="small">Edit</Button>
-                  </CardActions>
-                </Card>
+            {jobData.data.length > 0 && jobData.data.map((card: IJob) => (
+              <Grid item key={card.id} xs={12} sm={6} md={4}>
+                <JobCard card={card} />
               </Grid>
             ))}
           </Grid>
+          <Stack spacing={2} justifyContent="center"
+            alignItems="center" margin="40px" >
+            <Pagination count={10} variant="outlined" color="primary" />
+          </Stack>
         </Container>
       </main>
       {/* Footer */}
@@ -255,6 +211,3 @@ const [jobData, setJobData] = React.useState();
 export default MakerHome
 
 
-const SearchBar = styled.div`
-  
-`;
