@@ -46,4 +46,4 @@ Route.group(() => {
 // Route.post("api/images/:jobId", "ImagesController.upload");
 
 
-Route.get("api/location", "CommonsController.getLocations");
+Route.get("api/job-locations", "CommonsController.getLocations");
