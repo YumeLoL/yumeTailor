@@ -11,6 +11,7 @@ export default class JobValidator {
     userId: schema.string.optional({}, [
       rules.exists({ table: "users", column: "id" }),
     ]),
+    name: schema.string({ trim: true }, [rules.required()]),
     clothType: schema.number([rules.required(), rules.range(1001, 1005)]),
     location: schema.string({ trim: true }, [rules.required()]),
     description: schema.string({ trim: true }, [
