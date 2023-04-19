@@ -1,5 +1,6 @@
 import type { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 import Job from "App/Models/Job";
+import { CustomResponse } from "App/Middleware/GlobalResponseHandler";
 import JobValidator from "App/Validators/JobValidator";
 
 export default class JobsController {
@@ -8,7 +9,7 @@ export default class JobsController {
    * @param param0
    * @returns
    */
-  public async index({ request, response }: HttpContextContract) {
+  public async index({ request, response }: HttpContextContract & { response: CustomResponse }) {
     // Get query parameters
     const { page, limit, location, type } = request.qs();
 
@@ -30,7 +31,7 @@ export default class JobsController {
     // Paginate the results
     const jobs = await jobsQuery.paginate(page || 1, limit || 10);
 
-    return response.json({ jobs });
+    return response.apiSuccess(jobs, response.response.statusCode, "Jobs retrieved successfully");
   }
 
   /**
@@ -49,7 +50,7 @@ export default class JobsController {
       const job = await Job.create({
         userId,
         clothType,
-        location,
+        location: location.toLowerCase(),
         description,
         budget,
         status: true,

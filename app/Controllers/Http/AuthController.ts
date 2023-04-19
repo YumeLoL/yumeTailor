@@ -1,5 +1,5 @@
-import { Response } from "@adonisjs/core/build/standalone";
 import type { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
+import { CustomResponse } from "App/Middleware/GlobalResponseHandler";
 import User from "App/Models/User";
 import AuthValidator from "App/Validators/AuthValidator";
 
@@ -9,8 +9,12 @@ export default class AuthController {
    * @param param0
    * @returns
    */
-  public async login({ request, auth, response }: HttpContextContract) {
-   try {
+  public async login({
+    request,
+    auth,
+    response,
+  }: HttpContextContract & { response: CustomResponse }) {
+    try {
       const { loginSchema, messages } = new AuthValidator({} as any);
       // Validate the request data
       const { email, password } = await request.validate({
@@ -23,17 +27,19 @@ export default class AuthController {
         expiresIn: "10 days",
       });
 
-      
       // Retrieve the user by email
       const user = await User.findByOrFail("email", email);
-     
 
       // Save the user's id to the auth object
       await auth.use("api").login(user);
 
-      return {code: 1, data:token.toJSON(), message: "Login successfully"};
+      return response.apiSuccess(
+        { user: { id: user.id, role: user.role }, token: token.toJSON() },
+        response.response.statusCode,
+        "Login successfully"
+      );
     } catch (error) {
-      response.status(error.status).send({ error: error.message.split(': ')[1] });
+      return response.apiError(error.message.split(": ")[1], error.status);
     }
   }
 
@@ -42,7 +48,11 @@ export default class AuthController {
    * @param param0
    * @returns
    */
-  public async register({ request, auth }: HttpContextContract) {
+  public async register({
+    request,
+    response,
+    auth,
+  }: HttpContextContract & { response: CustomResponse }) {
     // Validate the request data
     const { registerSchema, messages } = new AuthValidator({} as any);
     const { email, password, role } = await request.validate({
@@ -61,9 +71,13 @@ export default class AuthController {
         expiresIn: "10 days",
       });
 
-      return token.toJSON();
+      return response.apiSuccess(
+        token.toJSON(),
+        response.response.statusCode,
+        "Register successfully"
+      );
     } catch (error) {
-      throw error;
+      return response.apiError(error.message.split(": ")[1], error.status);
     }
   }
 
@@ -72,8 +86,14 @@ export default class AuthController {
    * @param param0
    * @returns
    */
-  public async logout({ auth }: HttpContextContract) {
+  public async logout({
+    response,
+    auth,
+  }: HttpContextContract & { response: CustomResponse }) {
     await auth.use("api").logout();
-    return { message: "Logout successfully" };
+    return response.apiError(
+      "Logout successfully",
+      response.response.statusCode
+    );
   }
 }
