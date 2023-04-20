@@ -38,3 +38,23 @@ export const getJobDetail = async (jobId: string): Promise<AxiosResponse> => {
     method: "get",
   });
 };
+
+// make a quotation
+export const makeQuotation = async (
+  jobId: string,
+  data: any
+): Promise<AxiosResponse> => {
+  return axiosInstance({
+    url: `/quotation/job/${jobId}`,
+    method: "post",
+    data,
+  });
+};
+
+// get all quotations by job id
+export const getQuotations = async (jobId: string): Promise<AxiosResponse> => {
+  return axiosInstance({
+    url: `/quotation/all/${jobId}`,
+    method: "get",
+  });
+};

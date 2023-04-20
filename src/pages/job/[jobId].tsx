@@ -2,7 +2,7 @@ import Layout from '@/components/Layout'
 import { IJob } from '@/models/job'
 import router, { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
-import { getJobDetail } from '../api/httpRequest'
+import { getJobDetail, getQuotations, makeQuotation } from '../api/httpRequest'
 import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
@@ -12,12 +12,15 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import SendIcon from '@mui/icons-material/Send';
 import Button from '@mui/material/Button';
+import Alert from '@mui/material/Alert';
+import AlertTitle from '@mui/material/AlertTitle';
+import QuoteCard from '@/components/QuoteCard'
 
-interface JobIdProps {
-  jobId: string
-}
 const JobDetailPage = () => {
-  const [value, setValue] = React.useState('one');
+  const user = typeof localStorage !== 'undefined' && localStorage.getItem('user');
+  const userId = user ? JSON.parse(user)?.id : undefined;
+
+  const [value, setValue] = React.useState('job');
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
   };
@@ -25,11 +28,15 @@ const JobDetailPage = () => {
   const [messageError, setMessageError] = useState('');
   const [bidError, setBidError] = useState('');
 
+
   const router = useRouter()
-  const { jobId } = router.query
+  const { jobId } = router.query as { jobId: string }
   const [jobData, setJobData] = React.useState<IJob>()
 
-  const handleSend = (event: React.FormEvent<HTMLFormElement>) => {
+  const [sendMessage, setSendMessage] = useState(false)
+
+  // send quotation
+  const handleSend = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
 
@@ -46,15 +53,39 @@ const JobDetailPage = () => {
       return;
     }
 
-    console.log("send quote:", data.get('message'), data.get('bid'))
+    try {
+      const res = await makeQuotation(jobId, {
+        message: message,
+        bid: +bid,
+        status: 2001,
+        user_id: userId
+      })
+
+      if (res.data.status === 200) {
+        console.log(res.data)
+        setSendMessage(true)
+        setTimeout(() => {
+          setSendMessage(false)
+          setValue("quotes")
+        }, 3000); // remove error message after 5 seconds
+      } else {
+        console.log(res.data.message)
+      }
+
+    } catch (error) {
+      console.log(error)
+    }
+
   }
 
+  // fetch job detail
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await getJobDetail(jobId as string);
         if (response.data.status === 200) {
           setJobData(response.data.data);
+
         }
       } catch (error) {
         console.log("error:", error);
@@ -64,10 +95,26 @@ const JobDetailPage = () => {
   }, [jobId]);
 
 
+ 
+
   return (
     <Layout>
       <Container maxWidth="md"  >
         <CssBaseline />
+        <div style={{
+          position: 'fixed',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          zIndex: 9999,
+        }}>
+          {sendMessage && (
+            <Alert severity="success">
+              <AlertTitle>Success</AlertTitle>
+              Sent a quotation to the customer successfully — <strong>check it out!</strong>
+            </Alert>
+          )}
+        </div>
 
         <Stack height="150px" paddingBottom={2} direction="row" spacing={2} justifyContent="space-between" alignItems="flex-end">
           <Stack direction="row" spacing={2} justifyContent="center" alignItems="center">
@@ -89,6 +136,7 @@ const JobDetailPage = () => {
 
 
         <Box sx={{ width: '100%' }}>
+
           <Tabs
             value={value}
             onChange={handleChange}
@@ -96,11 +144,11 @@ const JobDetailPage = () => {
             indicatorColor="secondary"
             aria-label="secondary tabs example"
           >
-            <Tab value="one" label="Job Details" />
-            <Tab value="two" label="Quotations" />
+            <Tab value="job" label="Job Details" />
+            <Tab value="quotes" label="Quotations" />
           </Tabs>
           {
-            value === "one"
+            value === "job"
               ? <>
                 <Paper elevation={10} variant="outlined" sx={{ my: { xs: 3, md: 6 } }}>
 
@@ -158,7 +206,7 @@ const JobDetailPage = () => {
                     <TextField
                       required
                       id="standard-number"
-                      sx={{ p: { xs: 2, md: 3 }, pl: { xs: 0, md: 0 }, ml: { xs: 2, md: 3 }}}
+                      sx={{ p: { xs: 2, md: 3 }, pl: { xs: 0, md: 0 }, ml: { xs: 2, md: 3 } }}
                       label="Bid"
                       name="bid"
                       type="number"
@@ -178,9 +226,10 @@ const JobDetailPage = () => {
                     </Stack>
                   </Box>
                 </Paper></>
-              :
-              <div>xx</div>
-          }
+              : <QuoteCard/>
+            }
+              
+          
         </Box>
       </Container>
 

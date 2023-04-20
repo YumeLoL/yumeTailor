@@ -84,7 +84,7 @@ export default function HomeLogin() {
         setLoginError(res.data.message);
         setTimeout(() => {
           setLoginError("");
-        }, 5000); // remove error message after 5 seconds
+        }, 3000); // remove error message after 5 seconds
       }
     } catch (error) {
       // Handle login error
