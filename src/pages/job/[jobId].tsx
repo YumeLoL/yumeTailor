@@ -85,7 +85,6 @@ const JobDetailPage = () => {
         const response = await getJobDetail(jobId as string);
         if (response.data.status === 200) {
           setJobData(response.data.data);
-
         }
       } catch (error) {
         console.log("error:", error);
@@ -145,7 +144,7 @@ const JobDetailPage = () => {
             aria-label="secondary tabs example"
           >
             <Tab value="job" label="Job Details" />
-            <Tab value="quotes" label="Quotations" />
+            <Tab value="quotes" label={`Quotations(${jobData?.quotation_count})`} />
           </Tabs>
           {
             value === "job"

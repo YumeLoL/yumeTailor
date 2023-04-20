@@ -8,7 +8,7 @@ import MakerList from './maker';
 import { Container, Divider } from '@mui/material';
 
 export default function HomePage() {
-    const [value, setValue] = React.useState('one');
+    const [value, setValue] = React.useState('jobs');
 
     const handleChange = (event: React.SyntheticEvent, newValue: string) => {
         setValue(newValue);
@@ -25,12 +25,12 @@ export default function HomePage() {
                         indicatorColor="secondary"
                         aria-label="secondary tabs example"
                     >
-                        <Tab value="one" label="Makers" />
-                        <Tab value="two" label="Jobs" />
+                        <Tab value="makers" label="Makers" />
+                        <Tab value="jobs" label="Jobs" />
                     </Tabs>
                     <Divider />
                     {
-                        value === "one" ? <MakerList /> : <JobList />
+                        value === "makers" ? <MakerList /> : <JobList />
                     }
                 </Box>
             </Container>

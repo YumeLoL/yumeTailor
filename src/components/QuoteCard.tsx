@@ -3,10 +3,11 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
-import { Avatar, CardActionArea, Stack } from '@mui/material';
+import { Avatar, CardActionArea, Container, Skeleton, Stack } from '@mui/material';
 import { useEffect, useState } from 'react';
 import router, { useRouter } from 'next/router'
 import { getQuotations } from '@/pages/api/httpRequest';
+import Loading from './Loading';
 
 export default function QuoteCard() {
     const [quotes, setQuotes] = useState([])
@@ -18,7 +19,9 @@ export default function QuoteCard() {
             try {
                 const res = await getQuotations(jobId);
                 if (res.data.status === 200) {
-                    setQuotes(res.data.data);
+                    setTimeout(() => {
+                        setQuotes(res.data.data);
+                    }, 2000)
                 }
             } catch (error) {
                 console.log("error:", error);
@@ -28,12 +31,12 @@ export default function QuoteCard() {
     }, [])
 
     return (
-        <div>
+        <Container  >
             {
                 quotes.length > 0
                     ?
                     quotes.map((quote: any) => {
-                        return <Card key={quote.id} sx={{ maxWidth: "100%" }}>
+                        return <Card key={quote.id} sx={{ maxWidth: "100%", my: 5}}>
                             <CardActionArea>
                                 <Stack
                                     direction="row"
@@ -63,11 +66,12 @@ export default function QuoteCard() {
                             </CardActionArea>
                         </Card>
                     })
+                    
                     : (
-                        <div>No Quotes</div>
+                       quotes.length === 0 ? <Stack sx={{height:500}}><Loading /> </Stack> : <div>no quotes</div> 
                     )
             }
-        </div>
+        </Container>
     )
 
 }
