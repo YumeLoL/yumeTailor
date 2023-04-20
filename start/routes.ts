@@ -7,11 +7,13 @@ Route.get("api/auth/logout", "AuthController.logout");
 
 // user management api - admin, consumer, maker
 Route.group(() => {
-  Route.get(":userId", "UsersController.index"); // get user details
+  Route.get("all/search", "UsersController.index"); // get all users with pagination and filter by role
+  Route.get(":userId", "UsersController.show"); // get user details
   Route.post(":userId", "UsersController.store"); // create or update user details
+
 })
   .prefix("api/user")
-  .middleware("auth");
+  // .middleware("auth");
 
 // job management api
 Route.group(() => {
@@ -39,11 +41,9 @@ Route.group(() => {
   Route.put(":userId/status/:quotationId", "QuotationsController.update"); // update a quotation by quotation id
 }).prefix("api/quotation");
 
-
 // .middleware("auth");
 
 // image upload api
 // Route.post("api/images/:jobId", "ImagesController.upload");
-
 
 Route.get("api/job-locations", "CommonsController.getLocations");
