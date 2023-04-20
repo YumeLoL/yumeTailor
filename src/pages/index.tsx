@@ -15,7 +15,17 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { login } from './api/httpRequest';
 import { useState } from 'react';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert, { AlertProps } from '@mui/material/Alert';
+import Stack from '@mui/material/Stack';
 import styled from "styled-components";
+
+const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
+  props,
+  ref,
+) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 function Copyright(props: any) {
   return (
@@ -38,6 +48,20 @@ export default function HomeLogin() {
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [loginError, setLoginError] = useState('');
+
+  const [open, setOpen] = React.useState(false);
+
+  const handleClick = () => {
+    setOpen(true);
+  };
+
+  const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpen(false);
+  };
 
   // handle login submit
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -64,9 +88,9 @@ export default function HomeLogin() {
       if (res.data.status === 200) {
         console.log(res.data.status);
 
-        localStorage.setItem('token',  JSON.stringify(res.data.data.token)); // store token in local storage
+        localStorage.setItem('token', JSON.stringify(res.data.data.token)); // store token in local storage
         localStorage.setItem('user', JSON.stringify(res.data.data.user)); // store user in local storage
-       
+
         router.push("/maker")
 
       } else if (res.data.status === 400) {
@@ -95,9 +119,14 @@ export default function HomeLogin() {
             alignItems: 'center',
           }}
         >
-          {loginError && (
-            <ErrorText className="login-error">{loginError}</ErrorText>
-          )}
+          <Stack spacing={2} sx={{ width: '100%' }}>
+            {loginError && (
+              <Alert onClose={handleClose} severity="warning" sx={{ width: '100%' }}>
+                {loginError}
+              </Alert>
+            )}
+          </Stack>
+
           <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
             <LockOutlinedIcon />
           </Avatar>

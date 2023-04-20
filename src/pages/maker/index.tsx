@@ -22,6 +22,7 @@ import { IJob } from '@/models/job';
 import { clothType, IClothType } from '@/constant/clothType';
 import { getLabelById } from '@/tools/common';
 import JobCard from '@/components/JobCard';
+import Layout from '@/components/Layout'
 
 
 function Copyright() {
@@ -102,109 +103,103 @@ const MakerHome = () => {
   }
 
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <AppBar position="relative">
-        <Toolbar>
-          <CameraIcon sx={{ mr: 2 }} />
-          <Typography variant="h6" color="inherit" noWrap>
-            YumeTailor
-          </Typography>
-        </Toolbar>
-      </AppBar>
-      <main>
-        {/* Hero unit */}
-        <Box
-          sx={{
-            bgcolor: 'background.paper',
-            pt: 8,
-            pb: 6,
-          }}
-        >
-          <Container maxWidth="sm">
-            <Typography
-              component="h1"
-              variant="h2"
-              align="center"
-              color="text.primary"
-              gutterBottom
-            >
-              All Jobs
-            </Typography>
-            <Typography variant="h5" align="center" color="text.secondary" paragraph>
-              Something short and leading about the collection below—its contents,
-              the creator, etc. Make it short and sweet, but not too short so folks
-              don&apos;t simply skip over it entirely.
-            </Typography>
-            <Stack
-              direction="row"
-              divider={<Divider orientation="vertical" flexItem />}
-              spacing={2}
-            >
-              <Autocomplete
-                onChange={(event, newValue: IClothType | null) => {
-                  if (newValue) {
-                    setValue(newValue.id);
-                  } else {
-                    setValue(null);
-                  }
-                }}
-                id="combo-box-demo"
-                options={clothType}
-                sx={{ width: 150 }}
-                renderInput={(params) => <TextField {...params} label="Cloth Type" />}
-              />
-              <Autocomplete
-                onChange={(event, newValue: string | null) => {
-                  if (newValue) {
-                    setLocation(newValue);
-                  } else {
-                    setLocation('');
-                  }
-                }}
-                id="free-solo-demo"
-                freeSolo
-                options={locationList.map((option) => option)}
-                sx={{ width: 230 }}
-                renderInput={(params) => <TextField {...params} label="Location" />}
-              />
-              <Button variant="outlined" onClick={handleSearch}>Search</Button>
+    <Layout>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <main>
+          {/* Hero unit */}
+          <Box
+            sx={{
+              bgcolor: 'background.paper',
+              pt: 8,
+              pb: 6,
+            }}
+          >
+            <Container maxWidth="sm">
+              <Typography
+                component="h1"
+                variant="h2"
+                align="center"
+                color="text.primary"
+                gutterBottom
+              >
+                All Jobs
+              </Typography>
+              <Typography variant="h5" align="center" color="text.secondary" paragraph>
+                Something short and leading about the collection below—its contents,
+                the creator, etc. Make it short and sweet, but not too short so folks
+                don&apos;t simply skip over it entirely.
+              </Typography>
+              <Stack
+                direction="row"
+                divider={<Divider orientation="vertical" flexItem />}
+                spacing={2}
+              >
+                <Autocomplete
+                  onChange={(event, newValue: IClothType | null) => {
+                    if (newValue) {
+                      setValue(newValue.id);
+                    } else {
+                      setValue(null);
+                    }
+                  }}
+                  id="combo-box-demo"
+                  options={clothType}
+                  sx={{ width: 150 }}
+                  renderInput={(params) => <TextField {...params} label="Cloth Type" />}
+                />
+                <Autocomplete
+                  onChange={(event, newValue: string | null) => {
+                    if (newValue) {
+                      setLocation(newValue);
+                    } else {
+                      setLocation('');
+                    }
+                  }}
+                  id="free-solo-demo"
+                  freeSolo
+                  options={locationList.map((option) => option)}
+                  sx={{ width: 230 }}
+                  renderInput={(params) => <TextField {...params} label="Location" />}
+                />
+                <Button variant="outlined" onClick={handleSearch}>Search</Button>
 
+              </Stack>
+            </Container>
+          </Box>
+          <Container sx={{ py: 8 }} maxWidth="md">
+            {/* End hero unit */}
+            <Grid container spacing={4}>
+              {jobData?.data.length > 0 && jobData.data.map((card: IJob) => (
+                <Grid item key={card.id} xs={12} sm={6} md={4}>
+                  <JobCard card={card} />
+                </Grid>
+              ))}
+            </Grid>
+            <Stack spacing={2} justifyContent="center"
+              alignItems="center" margin="40px" >
+              <Pagination count={10} variant="outlined" color="primary" />
             </Stack>
           </Container>
+        </main>
+        {/* Footer */}
+        <Box sx={{ bgcolor: 'background.paper', p: 6 }} component="footer">
+          <Typography variant="h6" align="center" gutterBottom>
+            Footer
+          </Typography>
+          <Typography
+            variant="subtitle1"
+            align="center"
+            color="text.secondary"
+            component="p"
+          >
+            Something here to give the footer a purpose!
+          </Typography>
+          <Copyright />
         </Box>
-        <Container sx={{ py: 8 }} maxWidth="md">
-          {/* End hero unit */}
-          <Grid container spacing={4}>
-            {jobData.data.length > 0 && jobData.data.map((card: IJob) => (
-              <Grid item key={card.id} xs={12} sm={6} md={4}>
-                <JobCard card={card} />
-              </Grid>
-            ))}
-          </Grid>
-          <Stack spacing={2} justifyContent="center"
-            alignItems="center" margin="40px" >
-            <Pagination count={10} variant="outlined" color="primary" />
-          </Stack>
-        </Container>
-      </main>
-      {/* Footer */}
-      <Box sx={{ bgcolor: 'background.paper', p: 6 }} component="footer">
-        <Typography variant="h6" align="center" gutterBottom>
-          Footer
-        </Typography>
-        <Typography
-          variant="subtitle1"
-          align="center"
-          color="text.secondary"
-          component="p"
-        >
-          Something here to give the footer a purpose!
-        </Typography>
-        <Copyright />
-      </Box>
-      {/* End footer */}
-    </ThemeProvider>
+        {/* End footer */}
+      </ThemeProvider>
+    </Layout>
   );
 }
 

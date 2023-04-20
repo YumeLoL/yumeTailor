@@ -12,20 +12,29 @@ export const login = async (data: LoginParamsType): Promise<AxiosResponse> => {
   });
 };
 
-
 // get all job with pagination and filter by location and cloth type
-export const getJobs = async (params: JobParamsType): Promise<AxiosResponse> => {
-    return axiosInstance({
-        url: `/jobs/search`,
-        method: "get",
-        params,
-    });
-}
+export const getJobs = async (
+  params: JobParamsType
+): Promise<AxiosResponse> => {
+  return axiosInstance({
+    url: `/jobs/search`,
+    method: "get",
+    params,
+  });
+};
 
 // get all job locations
 export const getJobLocations = async (): Promise<AxiosResponse> => {
   return axiosInstance({
     url: `/job-locations`,
+    method: "get",
+  });
+};
+
+// get a job detail by job id
+export const getJobDetail = async (jobId: string): Promise<AxiosResponse> => {
+  return axiosInstance({
+    url: `/jobs/${jobId}`,
     method: "get",
   });
 };

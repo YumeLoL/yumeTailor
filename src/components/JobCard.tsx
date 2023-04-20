@@ -1,5 +1,4 @@
 import * as React from 'react';
-import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
@@ -7,12 +6,14 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { getLabelById } from '@/tools/common';
 import Stack from '@mui/material/Stack';
-import CardMedia from '@mui/material/CardMedia';
 import { IJob } from '@/models/job';
+import { useRouter } from 'next/router';
 
 
 
 export default function JobCard({ card }: { card: IJob }) {
+    const router = useRouter();
+
     return (
         <Card sx={{ minWidth: 275 }}>
             <CardContent>
@@ -46,7 +47,9 @@ export default function JobCard({ card }: { card: IJob }) {
 
             </CardContent>
             <CardActions>
-                <Button size="small">Learn More</Button>
+                <Button size="small" onClick={()=>{
+                    router.push(`/job/${card.id}`)
+                }}>Learn More</Button>
             </CardActions>
         </Card>
     );
