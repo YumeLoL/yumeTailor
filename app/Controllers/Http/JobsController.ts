@@ -134,17 +134,17 @@ export default class JobsController {
    * @param param0
    * @returns
    */
-  public async show({ params, response }: HttpContextContract) {
+  public async show({ params, response }: HttpContextContract & { response: CustomResponse }) {
     try {
       const job = await Job.findBy("id", params.jobId);
 
       if (job) {
-        return response.json({ job });
+        return response.apiSuccess( job, response.response.statusCode, "Job retrieved successfully")
       }
 
-      return response.status(404).json({ message: "Job not found" });
+      return response.apiError("Job not found", 404);
     } catch (error) {
-      return response.status(500).json({ message: "Something went wrong" });
+      return response.apiError(error.message.split(": ")[1], error.status);
     }
   }
 

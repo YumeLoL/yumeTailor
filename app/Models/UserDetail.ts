@@ -10,6 +10,9 @@ export default class UserDetail extends BaseModel {
   public userId: string
 
   @column()
+  public userRole: number
+
+  @column()
   public firstName: string
 
   @column()
