@@ -42,13 +42,34 @@ function Copyright() {
 const theme = createTheme()
 
 
-const MakerList = () => {
+const JobList = () => {
+  const [value, setValue] = React.useState<number | null>();
+  const [locationList, setLocationList] = React.useState<string[]>([]);
+  const [location, setLocation] = React.useState<string>();
   const [pagination, setPagination] = React.useState({
     page: 1,
     limit: 10,
+    location: location,
+    type: value
   })
   const [jobData, setJobData] = React.useState<any>();
 
+
+  // get location list
+  React.useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axiosInstance.get('/job-locations');
+        if (response.data.status === 200) {
+          setLocationList(response.data.data)
+        }
+      } catch (error) {
+        console.log('error:', error)
+      }
+    }
+
+    fetchData();
+  }, [])
 
   // paginate all jobs with filter by location and cloth type
   React.useEffect(() => {
@@ -57,6 +78,8 @@ const MakerList = () => {
         const response = await getJobs({
           page: pagination.page,
           limit: pagination.limit,
+          location: pagination.location,
+          type: pagination.type
         });
         if (response.data.status === 200) {
           setJobData(response.data.data)
@@ -69,6 +92,15 @@ const MakerList = () => {
     fetchData();
   }, [pagination])
 
+
+
+  const handleSearch = () => {
+    setPagination({
+      ...pagination,
+      location: location,
+      type: value
+    })
+  }
 
   return (
       <ThemeProvider theme={theme}>
@@ -90,22 +122,58 @@ const MakerList = () => {
                 color="text.primary"
                 gutterBottom
               >
-                All Makers
+                All Jobs
               </Typography>
               <Typography variant="h5" align="center" color="text.secondary" paragraph>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut.
+                Something short and leading about the collection below—its contents,
+                the creator, etc. Make it short and sweet, but not too short so folks
+                don&apos;t simply skip over it entirely.
               </Typography>
+              <Stack
+                direction="row"
+                divider={<Divider orientation="vertical" flexItem />}
+                spacing={2}
+              >
+                <Autocomplete
+                  onChange={(event, newValue: IClothType | null) => {
+                    if (newValue) {
+                      setValue(newValue.id);
+                    } else {
+                      setValue(null);
+                    }
+                  }}
+                  id="combo-box-demo"
+                  options={clothType}
+                  sx={{ width: 150 }}
+                  renderInput={(params) => <TextField {...params} label="Cloth Type" />}
+                />
+                <Autocomplete
+                  onChange={(event, newValue: string | null) => {
+                    if (newValue) {
+                      setLocation(newValue);
+                    } else {
+                      setLocation('');
+                    }
+                  }}
+                  id="free-solo-demo"
+                  freeSolo
+                  options={locationList.map((option) => option)}
+                  sx={{ width: 230 }}
+                  renderInput={(params) => <TextField {...params} label="Location" />}
+                />
+                <Button variant="outlined" onClick={handleSearch}>Search</Button>
+
+              </Stack>
             </Container>
           </Box>
           <Container sx={{ py: 8 }} maxWidth="md">
             {/* End hero unit */}
             <Grid container spacing={4}>
-              {/* {jobData?.data.length > 0 && jobData.data.map((card: IJob) => (
+              {jobData?.data.length > 0 && jobData.data.map((card: IJob) => (
                 <Grid item key={card.id} xs={12} sm={6} md={4}>
                   <JobCard card={card} />
                 </Grid>
-              ))} */
-              }
+              ))}
             </Grid>
             <Stack spacing={2} justifyContent="center"
               alignItems="center" margin="40px" >
@@ -133,4 +201,6 @@ const MakerList = () => {
   );
 }
 
-export default MakerList
+export default JobList
+
+

@@ -49,19 +49,6 @@ export default function HomeLogin() {
   const [passwordError, setPasswordError] = useState('');
   const [loginError, setLoginError] = useState('');
 
-  const [open, setOpen] = React.useState(false);
-
-  const handleClick = () => {
-    setOpen(true);
-  };
-
-  const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-
-    setOpen(false);
-  };
 
   // handle login submit
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -91,7 +78,7 @@ export default function HomeLogin() {
         localStorage.setItem('token', JSON.stringify(res.data.data.token)); // store token in local storage
         localStorage.setItem('user', JSON.stringify(res.data.data.user)); // store user in local storage
 
-        router.push("/maker")
+        router.push("/home")
 
       } else if (res.data.status === 400) {
         setLoginError(res.data.message);
@@ -119,13 +106,11 @@ export default function HomeLogin() {
             alignItems: 'center',
           }}
         >
-          <Stack spacing={2} sx={{ width: '100%' }}>
-            {loginError && (
-              <Alert onClose={handleClose} severity="warning" sx={{ width: '100%' }}>
+            {loginError  && (
+              <Alert severity="warning" sx={{ width: '100%' }}>
                 {loginError}
               </Alert>
             )}
-          </Stack>
 
           <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
             <LockOutlinedIcon />
