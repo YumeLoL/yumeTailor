@@ -6,7 +6,7 @@ import { getJobDetail, getQuotations, makeQuotation } from '../api/httpRequest'
 import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
-import { Chip, Divider, FormControl, Input, InputAdornment, InputLabel, Paper, Stack, TextField, Typography } from '@mui/material'
+import { Chip, Divider, Paper, Stack, TextField, Typography } from '@mui/material'
 import { getLabelById } from '@/tools/common'
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
@@ -91,7 +91,7 @@ const JobDetailPage = () => {
       }
     };
     fetchData();
-  }, [jobId]);
+  }, [jobId, value]);
 
 
  

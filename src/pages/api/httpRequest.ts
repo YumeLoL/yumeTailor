@@ -58,3 +58,11 @@ export const getQuotations = async (jobId: string): Promise<AxiosResponse> => {
     method: "get",
   });
 };
+
+// get a quotation by quotation id
+export const getQuotationByQuotationId = (quotationId: string): Promise<AxiosResponse> => {
+  return axiosInstance({
+    url: `/quotation/${quotationId}`,
+    method: "get",
+  });
+}
